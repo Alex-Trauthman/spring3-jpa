@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.alex.projeto.entities.User;
 import com.alex.projeto.repositories.UserRepository;
+import com.alex.projeto.services.exceptions.ResourceNotFoundException;
 @Service
 public class UserService {
 	@Autowired
@@ -18,7 +19,7 @@ public class UserService {
 	}
 	public User findById(Long id) {
 		Optional<User> obj = userRepository.findById(id);
-		return obj.get();
+		return obj.orElseThrow(()-> new ResourceNotFoundException(id));
 	}
 	public User insert(User obj) {
 		return userRepository.save(obj);
