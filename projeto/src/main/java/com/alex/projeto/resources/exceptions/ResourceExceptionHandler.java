@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.alex.projeto.services.exceptions.DatabaseException;
 import com.alex.projeto.services.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,13 @@ import jakarta.servlet.http.HttpServletRequest;
 public class ResourceExceptionHandler {
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardError> notFound(ResourceNotFoundException not, HttpServletRequest servlet){
+		String error = "resource not found";
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		StandardError standard = new StandardError(Instant.now(),status.value(),error,not.getMessage(),servlet.getRequestURI());
+		return ResponseEntity.status(status).body(standard);
+	}
+	@ExceptionHandler(DatabaseException.class)
+	public ResponseEntity<StandardError> databaseException(DatabaseException not, HttpServletRequest servlet){
 		String error = "resource not found";
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		StandardError standard = new StandardError(Instant.now(),status.value(),error,not.getMessage(),servlet.getRequestURI());
